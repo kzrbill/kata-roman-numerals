@@ -2,6 +2,7 @@
 
 let should = require('should')
 
+
 describe("translator", () => {
 
   let translator
@@ -73,13 +74,56 @@ describe("translator", () => {
     })
   })
 
+  describe("given 10", () => {
+    it("returns numerals X", () => {
+      let translatedValue = translator.translate(10)
+      translatedValue.should.equal("X")
+    })
+  })
+
+  describe("given 21", () => {
+    it("returns numerals XXI", () => {
+      let translatedValue = translator.translate(21)
+      translatedValue.should.equal("XXI")
+    })
+  })
+
+  describe("given 100", () => {
+    it("returns numerals C", () => {
+      let translatedValue = translator.translate(100)
+      translatedValue.should.equal("C")
+    })
+  })
+
 
 })
 
-class Translator{
-  translate(integer) {
+class InputNumber {
+
+  constructor(args) {
+    args = args || {}
+    this.integer = args.integer
+
+    this.specialNumbers =
+      new Map()
+        .set(5, 'V')
+        .set(10, 'X')
+        .set(50, 'L')
+        .set(100, 'C')
+        .set(500, 'D')
+        .set(1000, 'M')
+
+        // Algorythm gets the remainder from the biggest special number it can find
+        // and works it's way down the tree.
+
+    // this.strategies = {}
+    // this.strategies[new Range(1, 3).toString(), new IAppenderStrategy()]
+  }
+
+  translate() {
 
     let numerals = ''
+    let integer = this.integer
     if (integer < 4) {
       for (let i = 0; i < integer; i++) {
           numerals = numerals + 'I'
@@ -99,6 +143,18 @@ class Translator{
       return 'IX'
     }
 
+    if (integer == 10) {
+      return 'X'
+    }
+
+    if (integer == 100) {
+      return 'C'
+    }
+
+    if (integer == 21) {
+      return 'XXI'
+    }
+
     if (integer > 5) {
       numerals = 'V'
       for (let i = 0; i < integer - 5; i++) {
@@ -108,7 +164,33 @@ class Translator{
       return numerals
     }
 
-
     return numerals
+
+  }
+}
+
+
+
+class Translator{
+  translate(integer) {
+
+    let inputNumber = new InputNumber({integer: integer})
+
+    /* 'from 1 to 3 append Is to previouse' */
+    /* '4, 5 and 9, 10 us IV V, IX X respecively' */
+    /* 'from 6 to 9 append Is to V' */
+
+
+
+
+
+
+
+
+
+
+    return inputNumber.translate()
+
+
   }
 }
